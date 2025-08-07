@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Home, Briefcase, FolderOpen, Code, User, Mail, Linkedin, Github, Download, ExternalLink } from 'lucide-react';
+import { Home, Briefcase, FolderOpen, Code, User, Mail, Linkedin, Github, Download, ExternalLink, Menu, X } from 'lucide-react';
 
 const App = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Function to handle smooth scrolling
   const scrollToSection = (id: string) => {
@@ -14,6 +15,7 @@ const App = () => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
       setActiveSection(id);
+      setIsMobileMenuOpen(false); // Close mobile menu after navigation
     }
   };
 
@@ -195,8 +197,8 @@ const App = () => {
         </div>
       </div>
 
-      {/* Enhanced Vertical Navigation with animations */}
-      <div className={`fixed right-6 top-1/2 -translate-y-1/2 z-50 transition-all duration-1000 ${isLoaded ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
+      {/* Desktop Navigation - Hidden on mobile */}
+      <div className={`fixed right-6 top-1/2 -translate-y-1/2 z-50 transition-all duration-1000 hidden lg:block ${isLoaded ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
         <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl p-3 shadow-2xl border border-gray-700 hover:border-cyan-500/50 transition-all duration-300">
           <div className="flex flex-col space-y-4">
             {[
@@ -234,27 +236,72 @@ const App = () => {
         </div>
       </div>
 
+      {/* Mobile Navigation Bar - Fixed at bottom */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
+        <div className="bg-gray-800/95 backdrop-blur-sm border-t border-gray-700">
+          <div className="flex justify-around items-center px-4 py-3">
+            {[
+              { id: 'home', icon: Home, label: 'Home' },
+              { id: 'experience', icon: Briefcase, label: 'Experience' },
+              { id: 'leadership', icon: User, label: 'Leadership' },
+              { id: 'projects', icon: FolderOpen, label: 'Projects' },
+              { id: 'skills', icon: Code, label: 'Skills' },
+              { id: 'contact', icon: Mail, label: 'Contact' },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`flex flex-col items-center p-2 rounded-lg transition-all duration-300 ${
+                    activeSection === item.id
+                      ? 'text-cyan-400 bg-cyan-400/10'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <Icon size={18} />
+                  <span className="text-xs mt-1 font-medium">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
-      <div className="relative z-10">
+      <div className="relative z-10 pb-20 lg:pb-0"> {/* Add bottom padding for mobile nav */}
         {/* Enhanced Hero Section */}
-        <section id="home" className="min-h-screen flex items-center justify-center px-6">
+        <section id="home" className="min-h-screen flex items-center justify-center px-6 pt-20 lg:pt-0">
           <div className={`max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            {/* Profile Image - Moved to top on mobile */}
+            <div className="flex justify-center lg:hidden animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <div className="relative group">
+                <div className="w-64 h-64 lg:w-80 lg:h-80 rounded-full overflow-hidden border-4 border-cyan-500 shadow-2xl shadow-cyan-500/20 transition-all duration-500 group-hover:shadow-cyan-500/40 group-hover:scale-105">
+                  <img
+                    src="/images/ramani-profile.jpg"
+                    alt="Ramani Thungapati"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Text Content */}
-            <div className="space-y-6">
+            <div className="space-y-6 text-center lg:text-left">
               <div className="space-y-2">
-                <p className="text-xl text-gray-400 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>Hi, I'm</p>
-                <h1 className="text-5xl lg:text-7xl font-bold animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                <p className="text-xl text-gray-400 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>Hi, I'm</p>
+                <h1 className="text-4xl lg:text-7xl font-bold animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
                   <span className="text-white">Ramani</span>
                   <br />
                   <span className="text-cyan-400 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Thungapati</span>
                 </h1>
               </div>
-              <p className="text-lg text-gray-300 leading-relaxed max-w-2xl animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+              <p className="text-base lg:text-lg text-gray-300 leading-relaxed max-w-2xl mx-auto lg:mx-0 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
                 {personalInfo.detailedTagline}
               </p>
               
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
+              <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-fade-in-up justify-center lg:justify-start" style={{ animationDelay: '1s' }}>
                 <button
                   onClick={() => scrollToSection('contact')}
                   className="group bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25"
@@ -278,7 +325,7 @@ const App = () => {
               </div>
 
               {/* Social Media Icons */}
-              <div className="flex gap-4 pt-4 animate-fade-in-up" style={{ animationDelay: '1s' }}>
+              <div className="flex gap-4 pt-4 animate-fade-in-up justify-center lg:justify-start" style={{ animationDelay: '1.2s' }}>
                 <a
                   href={personalInfo.contact.github}
                   target="_blank"
@@ -298,8 +345,8 @@ const App = () => {
               </div>
             </div>
 
-            {/* Clean Profile Image - Removed decorative elements */}
-            <div className="flex justify-center lg:justify-end animate-fade-in-up" style={{ animationDelay: '1.2s' }}>
+            {/* Desktop Profile Image - Hidden on mobile */}
+            <div className="hidden lg:flex justify-center lg:justify-end animate-fade-in-up" style={{ animationDelay: '1.2s' }}>
               <div className="relative group">
                 <div className="w-80 h-80 rounded-full overflow-hidden border-4 border-cyan-500 shadow-2xl shadow-cyan-500/20 transition-all duration-500 group-hover:shadow-cyan-500/40 group-hover:scale-105">
                   <img
@@ -316,22 +363,22 @@ const App = () => {
         {/* Enhanced Experience Section */}
         <section id="experience" className="py-20 px-6">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-16 animate-fade-in-up">
+            <h2 className="text-3xl lg:text-4xl font-bold text-center mb-16 animate-fade-in-up">
               <span className="text-cyan-400 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Experience</span>
             </h2>
             <div className="space-y-8">
               {personalInfo.experience.map((job, index) => (
                 <div 
                   key={index} 
-                  className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-8 border border-gray-700 hover:border-cyan-500/50 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/10 animate-fade-in-up"
+                  className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 lg:p-8 border border-gray-700 hover:border-cyan-500/50 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/10 animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.2}s` }}
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                    <h3 className="text-2xl font-semibold text-white group-hover:text-cyan-400 transition-colors duration-300">{job.title}</h3>
-                    <span className="text-cyan-400 font-medium bg-cyan-400/10 px-3 py-1 rounded-full">{job.years}</span>
+                    <h3 className="text-xl lg:text-2xl font-semibold text-white group-hover:text-cyan-400 transition-colors duration-300">{job.title}</h3>
+                    <span className="text-cyan-400 font-medium bg-cyan-400/10 px-3 py-1 rounded-full text-sm lg:text-base mt-2 md:mt-0">{job.years}</span>
                   </div>
-                  <p className="text-lg text-gray-300 mb-4">{job.company}</p>
-                  <ul className="space-y-2 text-gray-300">
+                  <p className="text-base lg:text-lg text-gray-300 mb-4">{job.company}</p>
+                  <ul className="space-y-2 text-gray-300 text-sm lg:text-base">
                     {job.description.split('\n• ').map((item, i) => (
                       <li key={i} className="flex items-start group">
                         <span className="text-cyan-400 mr-2 transition-transform duration-300 group-hover:scale-125">•</span>
@@ -348,22 +395,22 @@ const App = () => {
         {/* Enhanced Leadership Section */}
         <section id="leadership" className="py-20 px-6 bg-gray-800/30">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-16 animate-fade-in-up">
+            <h2 className="text-3xl lg:text-4xl font-bold text-center mb-16 animate-fade-in-up">
               <span className="text-cyan-400 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Leadership</span> & Service
             </h2>
             <div className="space-y-8">
               {personalInfo.leadership.map((item, index) => (
                 <div 
                   key={index} 
-                  className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-8 border border-gray-700 hover:border-cyan-500/50 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/10 animate-fade-in-up"
+                  className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 lg:p-8 border border-gray-700 hover:border-cyan-500/50 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/10 animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.2}s` }}
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                    <h3 className="text-2xl font-semibold text-white group-hover:text-cyan-400 transition-colors duration-300">{item.title}</h3>
-                    <span className="text-cyan-400 font-medium bg-cyan-400/10 px-3 py-1 rounded-full">{item.years}</span>
+                    <h3 className="text-xl lg:text-2xl font-semibold text-white group-hover:text-cyan-400 transition-colors duration-300">{item.title}</h3>
+                    <span className="text-cyan-400 font-medium bg-cyan-400/10 px-3 py-1 rounded-full text-sm lg:text-base mt-2 md:mt-0">{item.years}</span>
                   </div>
-                  <p className="text-lg text-gray-300 mb-4">{item.company}</p>
-                  <ul className="space-y-2 text-gray-300">
+                  <p className="text-base lg:text-lg text-gray-300 mb-4">{item.company}</p>
+                  <ul className="space-y-2 text-gray-300 text-sm lg:text-base">
                     {item.description.split('\n• ').map((descItem, i) => (
                       <li key={i} className="flex items-start group">
                         <span className="text-cyan-400 mr-2 transition-transform duration-300 group-hover:scale-125">•</span>
@@ -380,23 +427,23 @@ const App = () => {
         {/* Enhanced Projects Section with updated links */}
         <section id="projects" className="py-20 px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-16 animate-fade-in-up">
+            <h2 className="text-3xl lg:text-4xl font-bold text-center mb-16 animate-fade-in-up">
               <span className="text-cyan-400 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Projects</span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {personalInfo.projects.map((project, index) => (
                 <div 
                   key={index} 
-                  className="group bg-gray-800/50 backdrop-blur-sm rounded-xl p-8 border border-gray-700 hover:border-cyan-500/50 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/10 animate-fade-in-up"
+                  className="group bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 lg:p-8 border border-gray-700 hover:border-cyan-500/50 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/10 animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl font-semibold text-white group-hover:text-cyan-400 transition-colors duration-300">{project.name}</h3>
+                    <h3 className="text-lg lg:text-xl font-semibold text-white group-hover:text-cyan-400 transition-colors duration-300">{project.name}</h3>
                     <span className="text-cyan-400 text-sm bg-cyan-400/10 px-2 py-1 rounded-full">{project.years}</span>
                   </div>
-                  <ul className="space-y-2 text-gray-300 mb-6">
+                  <ul className="space-y-2 text-gray-300 mb-6 text-sm lg:text-base">
                     {project.description.split('\n• ').map((item, i) => (
-                      <li key={i} className="flex items-start text-sm group">
+                      <li key={i} className="flex items-start group">
                         <span className="text-cyan-400 mr-2 transition-transform duration-300 group-hover:scale-125">•</span>
                         <span className="transition-colors duration-300 group-hover:text-white">{item.replace('• ', '')}</span>
                       </li>
@@ -424,7 +471,7 @@ const App = () => {
         {/* Enhanced Skills Section */}
         <section id="skills" className="py-20 px-6 bg-gray-800/30">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-16 animate-fade-in-up">
+            <h2 className="text-3xl lg:text-4xl font-bold text-center mb-16 animate-fade-in-up">
               <span className="text-cyan-400 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Skills</span> & Technologies
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -434,12 +481,12 @@ const App = () => {
                   className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700 hover:border-cyan-500/50 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/10 animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <h3 className="text-xl font-semibold text-white mb-4 group-hover:text-cyan-400 transition-colors duration-300">{category.category}</h3>
+                  <h3 className="text-lg lg:text-xl font-semibold text-white mb-4 group-hover:text-cyan-400 transition-colors duration-300">{category.category}</h3>
                   <div className="flex flex-wrap gap-2">
                     {category.items.map((skill, skillIndex) => (
                       <span
                         key={skillIndex}
-                        className="bg-gray-700 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-cyan-500 hover:text-white transition-all duration-300 cursor-default transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25"
+                        className="bg-gray-700 text-gray-200 px-3 py-1 rounded-full text-xs lg:text-sm hover:bg-cyan-500 hover:text-white transition-all duration-300 cursor-default transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25"
                         style={{ animationDelay: `${skillIndex * 0.05}s` }}
                       >
                         {skill}
@@ -455,10 +502,10 @@ const App = () => {
         {/* Enhanced Contact Section - Removed phone, updated email */}
         <section id="contact" className="py-20 px-6">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-8 animate-fade-in-up">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-8 animate-fade-in-up">
               <span className="text-cyan-400 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Let's Connect</span>
             </h2>
-            <p className="text-lg text-gray-300 mb-12 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <p className="text-base lg:text-lg text-gray-300 mb-12 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               I'm actively seeking full-time opportunities in Software Engineering and Data Analytics. 
               If you have a role that aligns with my background—or just want to connect—feel free to reach out. 
               I'd love to chat!

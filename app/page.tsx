@@ -60,12 +60,12 @@ const App = () => {
       },
       {
         title: "ML Research Assistant",
-        company: "Chico State University | Chico, California",
+        company: "California State University | Chico, California",
         years: "October 2024 - Present",
         description: "• Designed ML-based sensor systems to detect poaching threats to wild animals using motion, infrasound, and acoustic data, processing over 10K+ real-world samples.\n• Trained and optimized deep learning models (YOLOv8, Vision Transformers) for deployment in wildlife reserves, enabling sub-second inference and edge-based response.\n• Improved real-time threat detection accuracy by 23% and reduced false alarms by 31% through algorithm refinement and multi-modal data fusion techniques.",
       },
       {
-        title: "ML & Data Science Intern",
+        title: "Data Science Intern",
         company: "Tech Mahindra | Hyderabad, India",
         years: "June 2024 - August 2024",
         description: "• Created a Parkinson's classification pipeline in TensorFlow, reaching 88% accuracy with interpretable, probability-based outputs.\n• Cleaned and preprocessed over 10K medical records using SQL and NoSQL, improving model input quality by reducing data noise by 40%.\n• Via Python and R, we utilized sklearn, seaborn, ggplot, NumPy, Pandas, and Matplotlib to analyze data trends.",
